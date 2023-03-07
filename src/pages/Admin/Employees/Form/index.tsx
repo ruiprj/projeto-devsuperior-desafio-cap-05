@@ -1,9 +1,11 @@
 import './styles.css';
+import { useHistory } from 'react-router-dom';
 
 const Form = () => {
+  const history = useHistory();
 
   const handleCancel = () => {
-    // to do
+    history.push("/admin/employees");
   };
 
   return (
