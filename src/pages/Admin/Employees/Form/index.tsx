@@ -1,6 +1,6 @@
 import './styles.css';
 import { useHistory } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Employee } from 'types/employee';
 import { AxiosRequestConfig } from 'axios';
 import { requestBackend } from 'util/requests';
@@ -16,7 +16,7 @@ const Form = () => {
     history.push("/admin/employees");
   };
 
-  const { register, handleSubmit, formState: { errors } } = useForm<Employee>();
+  const { register, handleSubmit, formState: { errors }, control } = useForm<Employee>();
 
   const [selectDepartments, setSelectDepartments] = useState<Department[]>([]);
 
@@ -31,12 +31,12 @@ const Form = () => {
   }, []);
 
   const onSubmit = (formData: Employee) => {
-    const data = { ...formData, department: {id: 1, name: ""} };
+    // const data = { ...formData, department: {id: 1, name: ""} };
 
     const config: AxiosRequestConfig = {
       method: 'POST',
       url: '/employees',
-      data: data,
+      data: formData,
       withCredentials: true
     };
 
@@ -45,6 +45,7 @@ const Form = () => {
 
         toast.info('Funcionário cadastrado com sucesso!');
 
+        // console.log(response.data);
         history.push("/admin/employees");
 
       })
@@ -96,13 +97,25 @@ const Form = () => {
               </div>
 
               <div className="margin-bottom-30">
-                <Select
-                  options={ selectDepartments }
-                  classNamePrefix="employee-crud-select"
-                  getOptionLabel={(department: Department) => department.name}
-                  getOptionValue={(department: Department) => String(department.id)}
-                  placeholder="Departamento"
-                />
+                  <Controller
+                    name='department'
+                    rules={ {required: true} }
+                    control={ control }
+                    render={({field}) => (
+
+                      <Select {...field}
+                        options={ selectDepartments }
+                        classNamePrefix="employee-crud-select"
+                        getOptionLabel={(department: Department) => department.name}
+                        getOptionValue={(department: Department) => String(department.id)}
+                        placeholder="Departamento"
+                      />
+
+                    )}
+                  />
+                  {errors.department && (
+                    <div className="invalid-feedback  d-block">Campo obrigatório</div>
+                  )}
               </div>
             </div>
           </div>
