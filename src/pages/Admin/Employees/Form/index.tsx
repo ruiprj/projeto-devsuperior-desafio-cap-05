@@ -6,6 +6,8 @@ import { AxiosRequestConfig } from 'axios';
 import { requestBackend } from 'util/requests';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
+import { Department } from 'types/department';
+import { useEffect, useState } from 'react';
 
 const Form = () => {
   const history = useHistory();
@@ -15,6 +17,18 @@ const Form = () => {
   };
 
   const { register, handleSubmit, formState: { errors } } = useForm<Employee>();
+
+  const [selectDepartments, setSelectDepartments] = useState<Department[]>([]);
+
+  useEffect(() => {
+    requestBackend({
+      url: '/departments',
+      withCredentials: true
+    })
+    .then(response => {
+      setSelectDepartments(response.data);
+    })
+  }, []);
 
   const onSubmit = (formData: Employee) => {
     const data = { ...formData, department: {id: 1, name: ""} };
@@ -41,12 +55,6 @@ const Form = () => {
       });
 
   };
-
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ];
 
   return (
     <div className="employee-crud-container">
@@ -89,8 +97,10 @@ const Form = () => {
 
               <div className="margin-bottom-30">
                 <Select
-                  options={ options }
+                  options={ selectDepartments }
                   classNamePrefix="employee-crud-select"
+                  getOptionLabel={(department: Department) => department.name}
+                  getOptionValue={(department: Department) => String(department.id)}
                   placeholder="Departamento"
                 />
               </div>
