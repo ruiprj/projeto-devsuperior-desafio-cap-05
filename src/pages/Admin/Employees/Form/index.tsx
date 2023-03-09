@@ -43,7 +43,7 @@ const Form = () => {
     requestBackend(config)
       .then(response => {
 
-        toast.info('Funcionário cadastrado com sucesso!');
+        toast.info('Cadastrado com sucesso');
 
         // console.log(response.data);
         history.push("/admin/employees");
@@ -62,7 +62,7 @@ const Form = () => {
       <div className="base-card employee-crud-form-card">
         <h1 className="employee-crud-form-title">INFORME OS DADOS</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} >
+        <form onSubmit={handleSubmit(onSubmit)} data-testid="form" >
           <div className="row employee-crud-inputs-container">
             <div className="col employee-crud-inputs-left-container">
 
@@ -75,6 +75,7 @@ const Form = () => {
                   className={`form-control  base-input  ${errors.name ? 'is-invalid': ''}`}
                   placeholder="Nome do funcionário"
                   name="name"
+                  data-testid="name"
                 />
                 <div className="invalid-feedback  d-block">{errors.name?.message}</div>
               </div>
@@ -85,37 +86,40 @@ const Form = () => {
                     required: 'Campo obrigatório',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'E-mail inválido'
+                      message: 'Email inválido'
                     }
                   })}
                   type="text"
                   className={`form-control  base-input  ${errors.email ? 'is-invalid': ''}`}
                   placeholder="Email do funcionário"
                   name="email"
+                  data-testid="email"
                 />
                 <div className="invalid-feedback  d-block">{errors.email?.message}</div>
               </div>
 
               <div className="margin-bottom-30">
-                  <Controller
-                    name='department'
-                    rules={ {required: true} }
-                    control={ control }
-                    render={({field}) => (
+                <label htmlFor="department" className="d-none" >Departamento</label>
+                <Controller
+                  name='department'
+                  rules={ {required: true} }
+                  control={ control }
+                  render={({field}) => (
 
-                      <Select {...field}
-                        options={ selectDepartments }
-                        classNamePrefix="employee-crud-select"
-                        getOptionLabel={(department: Department) => department.name}
-                        getOptionValue={(department: Department) => String(department.id)}
-                        placeholder="Departamento"
-                      />
+                    <Select {...field}
+                      options={ selectDepartments }
+                      classNamePrefix="employee-crud-select"
+                      getOptionLabel={(department: Department) => department.name}
+                      getOptionValue={(department: Department) => String(department.id)}
+                      placeholder="Departamento"
+                      inputId="department"
+                    />
 
-                    )}
-                  />
-                  {errors.department && (
-                    <div className="invalid-feedback  d-block">Campo obrigatório</div>
                   )}
+                />
+                {errors.department && (
+                  <div className="invalid-feedback  d-block">Campo obrigatório</div>
+                )}
               </div>
             </div>
           </div>

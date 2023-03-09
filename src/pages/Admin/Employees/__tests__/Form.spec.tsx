@@ -30,7 +30,7 @@ describe('Employee form create tests', () => {
         userEvent.type(nameInput, 'Abel');
         userEvent.type(emailInput, 'abel@gmail.com');
 
-        const submitButton = screen.getByRole('button', { name: /salvar/i})
+        const submitButton = screen.getByRole('button', { name: /salvar/i });
         userEvent.click(submitButton);
 
         await waitFor(() => {
